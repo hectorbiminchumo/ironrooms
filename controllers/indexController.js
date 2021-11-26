@@ -66,5 +66,64 @@ const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/
 exports.viewLogin = async (req, res) => {
     res.render("login")
 
+}
+exports.login = async (req, res) => {
 
+    try{
+
+        //1. OBTENCION DE DATOS DEL FORMULARIO
+        const email = req.body.email
+        const password = req. body.password
+
+        //2. VALIDACION DE USUARIO ENCONTRADO EN BD
+        const foundUser = await User.findOneAndRemove({ email })
+
+        if(!foundUser){
+            res.render("login", {
+                errorMessage: "Email o contrasena sin coincidencia."
+            })
+            return
+        }
+
+        //3, VALIDACION DE CONTRASENA
+        // COMPARAR LA CONTRASE;A DEL FORMULARIO (1) VS LA CONTRASENA DE LA BASE DE DATOS (2)
+        const verifiedPass = await bcryptjs.compareSync(password, foundUser.passwordEncriptado)
+
+        if(!verifiedPass){
+            res.render("login", {
+                errorMessage: "Email o contrasena erronea. Intenta nuevamente."
+            })
+            return
+        }
+        //4. GENERAR LA SESION
+        // PERSISTENCIA DE IDENTIDAD
+        req.session.currentUser = {
+            _id: foundUser._id,
+            email: foundUser.email,
+            mensaje: "LO LOGRAMOS"
+        }
+
+        res.redirect("/users/profile")
+
+    } catch(error){
+        console.log(error);
+    }
+
+
+}
+
+exports.logout = async (req,res) => {
+    req.session.destroy((error) => {
+
+        //SE EVALUA SI HUBO UN ERROR AL BORRAR LA COOKIE
+
+        if(error){
+            console.log(error);
+            return
+        }
+        res.redirect("/")
+
+
+
+    })
 }
