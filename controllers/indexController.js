@@ -10,7 +10,7 @@ exports.home = async (req, res) => {
 
 }
 exports.viewRegister = (req, res) =>{
-    res.render("auth/signup")
+    res.render("signup")
 }
 
 
@@ -23,7 +23,7 @@ exports.register = async (req, res) => {
     const password = req.body.password
 
     if(!email || !password){
-        res.render("auth/signup",{
+        res.render("signup",{
             errorMessage: "Uno o mas campos estan vacios. Revisalos nuevamente."
         })
 
@@ -34,7 +34,7 @@ exports.register = async (req, res) => {
 const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/
 
     if(!regex.test(password)){
-        res.render("auth/signup",{
+        res.render("signup",{
             errorMessage: "Tu password debe de contener 6 caracteres, minimo un numero y una mayuscula"
         })
         return
@@ -52,11 +52,11 @@ const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/
         console.log(newUser);
 
         //REDIRECCION DE USUARIO
-        res.redirect("/login")
+        res.redirect("login")
     }catch(error){
         console.log(error);
 
-        res.status(500).render("auth/signup", {
+        res.status(500).render("signup", {
             errorMessage: "Hubo un error con la validez de tu correo. Intenta nuevamente. No dejes espacios y usa minusculas"
         })
 
@@ -64,7 +64,7 @@ const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/
 }
 
 exports.viewLogin = async (req, res) => {
-    res.render("auth/login")
+    res.render("login")
 
 
 }

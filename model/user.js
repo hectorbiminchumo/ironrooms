@@ -1,5 +1,5 @@
 //IMPORTACIONES
-const { match } = require("assert")
+
 const mongoose = require("mongoose")
 
 //SCHEMA
